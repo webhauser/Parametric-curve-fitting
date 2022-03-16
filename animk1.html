@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Cyclois demo k1</title>
+<script type="application/javascript" src="data/k1.json"></script>
+<script type="application/javascript">
+var ctx,raf;
+var eps = 0.025;
+var kk=1,tt=0.0;
+var X,Y;
+
+function P(p,l,t,k) { return(
+	p[k][l]+ 
+	0.5*(p[k+1][l]-p[k-1][l])*t- 
+	0.5*(p[k+2][l]-4*p[k+1][l]+5*p[k][l]-2*p[k-1][l])*t*t+ 
+	0.5*(p[k+2][l]-3*p[k+1][l]+3*p[k][l]-p[k-1][l])*t*t*t);
+}
+
+function fit(data, cxs, cys) {	
+	var dxs = data.bounds.max[0]-data.bounds.min[0];
+	var dys = data.bounds.max[1]-data.bounds.min[1];
+	var sx = dxs/cxs;
+	var sy = dys/cys;
+	if(dxs > cxs) {
+		sx=1.0/sx;
+		sy=1.0/sy;
+	}	
+	for(let i=0; i<data.points.length; i++) {
+		data.points[i][0]*=sx;
+		data.points[i][1]*=sy;
+	}
+}
+
+function cls3(data) {
+	data.points.push(data.points[0]);
+	data.points.push(data.points[1]);
+	data.points.push(data.points[2]);
+}
+
+function draw() {  
+  var canvas = document.getElementById('canvas');
+  canvas.width = window.screen.availWidth;
+  canvas.height= window.screen.availHeight;
+  fit(k1,canvas.width-200,canvas.height-200);
+  cls3(k1);
+  if (canvas.getContext) {
+	ctx = canvas.getContext('2d');
+	var p=k1.points;
+	
+	/* 
+	* Display initial points 
+	*/
+	ctx.fillStyle = 'blue';
+	ctx.beginPath();
+	//ctx.moveTo(p[0][0], p[0][1]);
+	ctx.fillRect(p[0][0],p[0][1],4,4);	
+	for(let i=1; i<p.length; i++) {
+		//ctx.lineTo(p[i][0], p[i][1]);
+		ctx.fillRect(p[i][0],p[i][1],4,4);
+	}
+	ctx.stroke();
+
+	ctx.fillStyle = 'red';	
+	raf = window.requestAnimationFrame(animcurve);
+  }
+}
+
+function animcurve() {	
+	if(kk<k1.points.length-1) {
+		if(tt<=1.0) {
+			X=P(k1.points,0,tt,kk);
+			Y=P(k1.points,1,tt,kk);
+			ctx.fillRect(X,Y,2,2);	
+			tt+=eps;		
+		}
+		else {
+			tt=0.0;
+			kk++;
+		}
+		raf = window.requestAnimationFrame(animcurve);
+	}
+	else window.cancelAnimationFrame(raf);
+}
+</script>
+ </head>
+ <body onload="draw();">
+   <canvas id="canvas"></canvas>
+ </body>
+</html>
