@@ -8,5 +8,12 @@ The parametric representation allows walking through the whole curve as the para
 #### Drawing the whole curve once from the digitized data.
 #### Animating the walk-through of the curve like drawing by hand.
 
+*[Test Curve 1](k1.html)
+*[Test Curve 2](k2.html)
+*[Test Curve 3](k3.html)
+
+*[Draw Curve 1](drawk1.html)
+*[Animate Curve 1](animk1.html)
+
 PAPER: Parametric curve fitting: An alternativeto Lagrange interpolation and spline, Yilmaz Akyildiza
 COMPUTERS IN PHYSICS,VOL8,NO,6,NOV/DEC 1994
